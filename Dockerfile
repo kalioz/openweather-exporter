@@ -11,11 +11,12 @@ COPY . .
 
 RUN go version
 RUN go mod vendor
+# tests do not run on arm infrastructure
 # RUN GO111MODULE=on CGO_ENABLED=1 go test -race -mod vendor ./...
 RUN GO111MODULE=on CGO_ENABLED=0 go build -mod vendor -ldflags "$LD_FLAGS" -o /go/bin/app .
 
 # fetch SSL dependencies
-RUN apt update && apt install -y git ca-certificates && update-ca-certificates
+RUN apt-get update && apt-get install -y git ca-certificates && update-ca-certificates
 
 ENTRYPOINT ["/go/bin/app"]
 
